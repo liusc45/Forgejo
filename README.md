@@ -57,7 +57,7 @@ docker-compose down
 - `FORGEJO__server__*`: Configuración del servidor
 
 ### Base de Datos
-- **Motor**: MySQL 8
+- **Motor**: Percona Server 8.0
 - **Base de datos**: forgejo
 - **Usuario**: forgejo
 - **Contraseña**: forgejo
