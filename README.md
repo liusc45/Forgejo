@@ -42,12 +42,18 @@ docker-compose down
 .
 ├── docker-compose.yaml    # Configuración de servicios
 ├── Caddyfile             # Configuración del proxy inverso
-├── forgejo/              # Datos de Forgejo (volumen persistente)
-├── mysql/                # Datos de MySQL (volumen persistente)
-├── caddy_data/           # Datos de Caddy (certificados, etc.)
-├── caddy_config/         # Configuración de Caddy
+├── forgejo/              # Datos de Forgejo (repositorios, configuración)
+├── mysql/                # Base de datos Percona Server (persistente)
+├── caddy_data/           # Certificados SSL, logs de Caddy
+├── caddy_config/         # Configuración dinámica de Caddy
 └── README.md            # Esta documentación
 ```
+
+### Volumenes Importantes:
+- **forgejo/**: Repositorios Git, datos de usuarios, configuración
+- **mysql/**: Toda la base de datos, incluye tablas, índices, usuarios
+- **caddy_data/**: Certificados SSL automáticos, logs de accesos
+- **caddy_config/**: Configuración en tiempo de ejecución de Caddy
 
 ## 🔧 Configuración
 
@@ -57,10 +63,24 @@ docker-compose down
 - `FORGEJO__server__*`: Configuración del servidor
 
 ### Base de Datos
-- **Motor**: Percona Server 8.0
+- **Motor**: Percona Server 8.0 (drop-in replacement mejorado de MySQL)
 - **Base de datos**: forgejo
 - **Usuario**: forgejo
 - **Contraseña**: forgejo
+
+#### Ventajas de Percona Server sobre MySQL:
+- **Mejor rendimiento**: 2x más rápido en consultas complejas
+- **Mayor escalabilidad**: Soporte para más conexiones concurrentes
+- **XtraDB**: Motor de almacenamiento mejorado basado en InnoDB
+- **Mejor diagnóstico**: Herramientas avanzadas de monitoreo y análisis
+- **Hot backups**: Backups sin detener el servicio
+- **Compatible 100%**: Sustitución directa de MySQL
+- **Enterprise features**: Características corporativas disponibles gratuitamente
+
+#### Volumenes y Persistencia:
+- **mysql/**: Datos persistentes de la base de datos (`/var/lib/mysql`)
+- **Importante**: Los datos se conservan al reiniciar o actualizar contenedores
+- **Backups recomendados**: Copiar el directorio `mysql/` regularmente
 
 ### Proxy Inverso (Caddy)
 - **Dominio**: git.localhost
