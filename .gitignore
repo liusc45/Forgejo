@@ -1,0 +1,23 @@
+# Docker data directories
+mysql/
+forgejo/
+caddy_data/
+caddy_config/
+
+# Backups
+mysql_backup_*/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
