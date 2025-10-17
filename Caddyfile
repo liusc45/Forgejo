@@ -1,0 +1,42 @@
+git.localhost {
+    # Reverse proxy to Forgejo
+    reverse_proxy forgejo:3000
+
+    # Handle Git HTTP/HTTPS traffic
+    header {
+        # Enable CORS for Git operations
+        Access-Control-Allow-Origin "*"
+        Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        Access-Control-Allow-Headers "Accept, Authorization, Content-Type, X-Requested-With"
+
+        # Proxy headers
+        X-Forwarded-Proto {scheme}
+        X-Forwarded-Host {host}
+        X-Forwarded-For {remote_host}
+
+        # Security headers
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy strict-origin-when-cross-origin
+    }
+
+    # Handle large Git pushes
+    request_body {
+        max_size 100MB
+    }
+
+    # Enable gzip compression
+    encode gzip
+
+    # Log requests
+    log {
+        output file /var/log/caddy/git.log
+        format json
+    }
+}
+
+# Redirect HTTP to HTTPS (optional for localhost)
+:80 {
+    redir https://{host}{uri} permanent
+}
